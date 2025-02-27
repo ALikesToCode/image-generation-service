@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles/main.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="min-h-screen bg-base-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-5xl font-bold text-center mb-8 bg-gradient-to-r to-secondary bg-clip-text text-transparent">
+            AI Image Generator
+        </h1>
+
+        <div class="card bg-base-200 shadow-xl max-w-7xl mx-auto mb-12">
+            <div class="card-body space-y-6">
+                <form id="generateForm" class="space-y-4">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Enter your prompt</span>
+                        </label>
+                        <textarea id="prompt" class="textarea textarea-bordered h-24" placeholder="Describe the image you want to generate..." required></textarea>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Select Provider</span>
+                        </label>
+                        <select id="provider" class="select select-bordered w-full">
+                            <option value="flux">FLUX</option>
+                            <option value="together">Together AI</option>
+                            <option value="recraft">Recraft V3</option>
+                        </select>
+                    </div>
+
+                    <!-- Standard options for FLUX and Together AI -->
+                    <div id="standardOptions" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Width</span>
+                                </label>
+                                <input type="number" id="width" class="input input-bordered" value="1024" min="64" max="2048" step="64" />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Height</span>
+                                </label>
+                                <input type="number" id="height" class="input input-bordered" value="768" min="64" max="2048" step="64" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Steps</span>
+                                </label>
+                                <input type="number" id="steps" class="input input-bordered" value="28" min="1" max="100" />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Number of Images</span>
+                                </label>
+                                <input type="number" id="n" class="input input-bordered" value="1" min="1" max="4" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recraft-specific options -->
+                    <div id="recraftOptions" class="space-y-4 hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Image Size</span>
+                                </label>
+                                <select id="imageSize" class="select select-bordered w-full">
+                                    <!-- Options will be populated from config -->
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Style</span>
+                                </label>
+                                <select id="style" class="select select-bordered w-full">
+                                    <option value="realistic_image">Realistic Image</option>
+                                    <option value="digital_illustration">Digital Illustration</option>
+                                    <option value="vector_illustration">Vector Illustration</option>
+                                    <option value="realistic_image/b_and_w">Black and White</option>
+                                    <option value="realistic_image/hdr">HDR</option>
+                                    <option value="realistic_image/natural_light">Natural Light</option>
+                                    <option value="digital_illustration/pixel_art">Pixel Art</option>
+                                    <option value="digital_illustration/hand_drawn">Hand Drawn</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Color Palette (optional)</span>
+                            </label>
+                            <div class="flex flex-wrap gap-2">
+                                <input type="color" class="color-input h-8 w-8" title="Add color to palette">
+                                <input type="color" class="color-input h-8 w-8" title="Add color to palette">
+                                <input type="color" class="color-input h-8 w-8" title="Add color to palette">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-4">
+                        <button type="submit" id="generateButton" class="btn btn-primary">
+                            Generate Images
+                        </button>
+                        <div id="loadingIndicator" class="loading loading-spinner loading-md hidden"></div>
+                    </div>
+                </form>
+
+                <div id="errorMessage" class="alert alert-error hidden"></div>
+            </div>
+        </div>
+
+        <!-- Gallery section will be populated by JavaScript -->
+        <div id="gallerySection" class="space-y-8"></div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 

@@ -1,0 +1,37 @@
+{
+	"name": "ai-image-generator",
+	"version": "1.0.0",
+	"dependencies": {
+		"@fal-ai/client": "^1.2.1",
+		"@tailwindcss/forms": "^0.5.7",
+		"@tailwindcss/typography": "^0.5.10",
+		"axios": "^1.7.7",
+		"body-parser": "^1.20.3",
+		"daisyui": "^4.4.24",
+		"dotenv": "^16.3.1",
+		"express": "^4.21.1",
+		"express-rate-limit": "^7.1.5",
+		"express-validator": "^7.0.1",
+		"gsap": "^3.12.4",
+		"helmet": "^7.1.0",
+		"highlight.js": "^11.10.0",
+		"http-proxy-middleware": "^3.0.3",
+		"marked": "^15.0.2",
+		"mongoose": "^8.9.3",
+		"openai": "^4.73.0",
+		"sweetalert2": "^11.10.2",
+		"tailwindcss": "^3.4.0",
+		"tippy.js": "^6.3.7",
+		"winston": "^3.11.0"
+	},
+	"scripts": {
+		"start": "node app.js",
+		"dev": "nodemon app.js",
+		"build:css": "tailwindcss -i ./src/styles/input.css -o ./public/styles/main.css --watch"
+	},
+	"devDependencies": {
+		"autoprefixer": "^10.4.16",
+		"nodemon": "^3.0.2",
+		"postcss": "^8.4.32"
+	}
+}

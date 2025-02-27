@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-secondary-500 hover:from-primary-700 hover:to-secondary-600;
+  }
+  
+  .glass-card {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg;
+  }
+  
+  .input-group {
+    @apply relative flex items-center;
+  }
+  
+  .input-icon {
+    @apply absolute left-3 text-gray-400;
+  }
+  
+  .input-with-icon {
+    @apply pl-10;
+  }
+} 
