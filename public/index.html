@@ -101,6 +101,39 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="form-control">
                                     <label class="label">
+                                        <span class="label-text font-medium">Aspect Ratio</span>
+                                        <span class="label-text-alt" data-tippy-content="Choose the proportions of your image">
+                                            <i class="fas fa-info-circle"></i>
+                                        </span>
+                                    </label>
+                                    <select id="aspectRatio" class="select select-bordered w-full focus:select-primary">
+                                        <option value="1:1">Square (1:1)</option>
+                                        <option value="4:3">Standard (4:3)</option>
+                                        <option value="16:9" selected>Widescreen (16:9)</option>
+                                        <option value="21:9">Ultrawide (21:9)</option>
+                                        <option value="2:3">Portrait (2:3)</option>
+                                        <option value="9:16">Vertical (9:16)</option>
+                                        <option value="custom">Custom Size</option>
+                                    </select>
+                                </div>
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text font-medium">Image Size</span>
+                                        <span class="label-text-alt" data-tippy-content="Larger sizes may take longer to generate">
+                                            <i class="fas fa-info-circle"></i>
+                                        </span>
+                                    </label>
+                                    <select id="imageSize" class="select select-bordered w-full focus:select-primary">
+                                        <option value="small">Small</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="large">Large</option>
+                                        <option value="xl">Extra Large</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="customSizeFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+                                <div class="form-control">
+                                    <label class="label">
                                         <span class="label-text font-medium">Width</span>
                                     </label>
                                     <input type="number" id="width" class="input input-bordered focus:input-primary" value="1024" min="64" max="2048" step="64" />
@@ -134,14 +167,6 @@
                         <!-- Recraft-specific options -->
                         <div id="recraftOptions" class="hidden col-span-1 md:col-span-2">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="form-control">
-                                    <label class="label">
-                                        <span class="label-text font-medium">Image Size</span>
-                                    </label>
-                                    <select id="imageSize" class="select select-bordered w-full focus:select-primary">
-                                        <!-- Options will be populated from config -->
-                                    </select>
-                                </div>
                                 <div class="form-control">
                                     <label class="label">
                                         <span class="label-text font-medium">Style</span>

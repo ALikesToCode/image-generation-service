@@ -21,6 +21,25 @@ export class ImageGenerator {
           ],
           defaultSize: 'square_hd',
           defaultStyle: 'realistic_image'
+        },
+        // Size presets based on quality level
+        sizePresets: {
+          small: {
+            baseWidth: 512,
+            baseHeight: 512
+          },
+          medium: {
+            baseWidth: 768,
+            baseHeight: 768
+          },
+          large: {
+            baseWidth: 1024,
+            baseHeight: 1024
+          },
+          xl: {
+            baseWidth: 1536,
+            baseHeight: 1536
+          }
         }
       }
     };
@@ -42,7 +61,9 @@ export class ImageGenerator {
       imageSize: null,
       style: null,
       colorInputs: null,
-      galleryContent: null
+      galleryContent: null,
+      aspectRatio: null,
+      customSizeFields: null
     };
     
     // State
@@ -58,6 +79,7 @@ export class ImageGenerator {
     this.loadHistory();
     this.setupEventListeners();
     this.setupGalleryEventListeners();
+    this.setupAspectRatioHandler();
     this.fetchConfig();
     this.initializeFormWithConfig();
   }
@@ -82,7 +104,9 @@ export class ImageGenerator {
       imageSize: document.getElementById('imageSize'),
       style: document.getElementById('style'),
       colorInputs: document.querySelectorAll('.color-input'),
-      galleryContent: document.getElementById('galleryContent')
+      galleryContent: document.getElementById('galleryContent'),
+      aspectRatio: document.getElementById('aspectRatio'),
+      customSizeFields: document.getElementById('customSizeFields')
     };
   }
   
@@ -126,6 +150,86 @@ export class ImageGenerator {
         this.elements.prompt.classList.remove('border-primary');
       });
     }
+  }
+  
+  /**
+   * Set up aspect ratio handler
+   */
+  setupAspectRatioHandler() {
+    if (!this.elements.aspectRatio || !this.elements.width || !this.elements.height) return;
+    
+    const aspectRatioSelect = this.elements.aspectRatio;
+    const imageSizeSelect = this.elements.imageSize;
+    const widthInput = this.elements.width;
+    const heightInput = this.elements.height;
+    const customSizeFields = this.elements.customSizeFields;
+    
+    // Handle aspect ratio change
+    aspectRatioSelect.addEventListener('change', () => {
+      const ratio = aspectRatioSelect.value;
+      
+      if (ratio === 'custom') {
+        // Show custom size fields
+        if (customSizeFields) customSizeFields.classList.remove('hidden');
+        return;
+      }
+      
+      // Hide custom size fields
+      if (customSizeFields) customSizeFields.classList.add('hidden');
+      
+      // Calculate dimensions based on aspect ratio and selected size
+      this.updateDimensionsFromAspectRatio();
+    });
+    
+    // Handle image size change
+    if (imageSizeSelect) {
+      imageSizeSelect.addEventListener('change', () => {
+        this.updateDimensionsFromAspectRatio();
+      });
+    }
+    
+    // Initial calculation
+    this.updateDimensionsFromAspectRatio();
+  }
+  
+  /**
+   * Update dimensions based on aspect ratio and size
+   */
+  updateDimensionsFromAspectRatio() {
+    if (!this.elements.aspectRatio || !this.elements.width || !this.elements.height) return;
+    
+    const ratio = this.elements.aspectRatio.value;
+    if (ratio === 'custom') return;
+    
+    const [widthRatio, heightRatio] = ratio.split(':').map(Number);
+    if (!widthRatio || !heightRatio) return;
+    
+    // Get base size from selected size preset
+    const sizePreset = this.elements.imageSize ? 
+      this.config.imageGeneration.sizePresets[this.elements.imageSize.value] : 
+      this.config.imageGeneration.sizePresets.medium;
+    
+    const baseSize = sizePreset ? sizePreset.baseWidth : 1024;
+    
+    // Calculate dimensions while maintaining aspect ratio
+    // Scale based on the longer dimension to ensure it fits within baseSize
+    let newWidth, newHeight;
+    
+    if (widthRatio > heightRatio) {
+      newWidth = baseSize;
+      newHeight = Math.round((baseSize * heightRatio) / widthRatio);
+    } else {
+      newHeight = baseSize;
+      newWidth = Math.round((baseSize * widthRatio) / heightRatio);
+    }
+    
+    // Round to nearest 64 (common for AI models)
+    newWidth = Math.round(newWidth / 64) * 64;
+    newHeight = Math.round(newHeight / 64) * 64;
+    
+    // Update input fields
+    this.elements.width.value = newWidth;
+    this.elements.height.value = newHeight;
   }
   
   /**
@@ -264,17 +368,12 @@ export class ImageGenerator {
     }
     
     // Initialize Recraft-specific fields
-    if (this.elements.imageSize) {
-      const sizeSelect = this.elements.imageSize;
-      sizeSelect.innerHTML = this.config.imageGeneration.recraft.availableSizes
-        .map(size => `<option value="${size}">${this.formatOptionLabel(size)}</option>`)
-        .join('');
-      sizeSelect.value = this.config.imageGeneration.recraft.defaultSize;
-    }
-    
     if (this.elements.style) {
       this.elements.style.value = this.config.imageGeneration.recraft.defaultStyle;
     }
+    
+    // Update dimensions based on aspect ratio
+    this.updateDimensionsFromAspectRatio();
   }
   
   /**
@@ -319,7 +418,34 @@ export class ImageGenerator {
       };
       
       if (provider === 'recraft') {
-        requestData.imageSize = this.elements.imageSize.value;
+        // For Recraft, use the aspect ratio to determine the image size
+        const aspectRatio = this.elements.aspectRatio.value;
+        let imageSize = 'square_hd'; // Default
+        
+        if (aspectRatio === '1:1') {
+          imageSize = 'square_hd';
+        } else if (aspectRatio === '4:3' || aspectRatio === '3:2') {
+          imageSize = 'landscape_hd';
+        } else if (aspectRatio === '16:9' || aspectRatio === '21:9') {
+          imageSize = 'landscape_hd';
+        } else if (aspectRatio === '2:3' || aspectRatio === '9:16') {
+          imageSize = 'portrait_hd';
+        } else if (aspectRatio === 'custom') {
+          // Use the closest match based on width/height ratio
+          const width = parseInt(this.elements.width.value);
+          const height = parseInt(this.elements.height.value);
+          const ratio = width / height;
+          
+          if (ratio > 1.2) {
+            imageSize = 'landscape_hd';
+          } else if (ratio < 0.8) {
+            imageSize = 'portrait_hd';
+          } else {
+            imageSize = 'square_hd';
+          }
+        }
+        
+        requestData.imageSize = imageSize;
         requestData.style = this.elements.style.value;
         
         // Get color palette
@@ -334,6 +460,7 @@ export class ImageGenerator {
           requestData.colorPalette = colors;
         }
       } else {
+        // For other providers, use the calculated width and height
         requestData.width = parseInt(this.elements.width.value);
         requestData.height = parseInt(this.elements.height.value);
         requestData.steps = parseInt(this.elements.steps.value);
@@ -371,7 +498,8 @@ export class ImageGenerator {
         provider,
         width: requestData.width,
         height: requestData.height,
-        style: requestData.style
+        style: requestData.style,
+        aspectRatio: this.elements.aspectRatio ? this.elements.aspectRatio.value : null
       });
       
       // Show success notification
@@ -501,11 +629,18 @@ export class ImageGenerator {
         const provider = metadata.provider || 'AI';
         const formattedProvider = provider.charAt(0).toUpperCase() + provider.slice(1);
         
+        // Add aspect ratio badge if available
+        let aspectRatioBadge = '';
+        if (metadata.aspectRatio && metadata.aspectRatio !== 'custom') {
+          aspectRatioBadge = `<span class="badge badge-secondary ml-2">${metadata.aspectRatio}</span>`;
+        }
+        
         card.innerHTML = `
           <figure class="relative h-64 overflow-hidden">
             <img src="${imageUrl}" alt="${prompt}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
             <div class="absolute top-2 right-2">
               <span class="badge badge-primary">${formattedProvider}</span>
+              ${aspectRatioBadge}
             </div>
           </figure>
           <div class="card-body">

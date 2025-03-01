@@ -155,4 +155,20 @@
   .hardware-accelerated {
     transform: translateZ(0);
   }
+  
+  /* Aspect ratio container */
+  .aspect-ratio-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .aspect-ratio-container > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 } 

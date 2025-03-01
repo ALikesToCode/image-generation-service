@@ -19,6 +19,15 @@ module.exports = {
         'float': 'float 3s ease-in-out infinite',
         'gradient': 'gradient 8s ease infinite',
       },
+      aspectRatio: {
+        '1/1': '1 / 1',
+        '4/3': '4 / 3',
+        '3/2': '3 / 2',
+        '16/9': '16 / 9',
+        '21/9': '21 / 9',
+        '2/3': '2 / 3',
+        '9/16': '9 / 16',
+      },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
