@@ -1,3 +1,5 @@
+import { ChatAssistant } from './modules/ChatAssistant.js';
+
 class ChatUI {
   constructor() {
     this.chatMessages = document.getElementById('chatMessages');
@@ -218,5 +220,6 @@ class ChatUI {
 
 // Initialize chat when document is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  new ChatUI();
+  const chat = new ChatAssistant();
+  window.chat = chat; // Make it globally accessible if needed
 }); 

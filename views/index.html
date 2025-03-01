@@ -4,193 +4,300 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Generate unique images using AI technology">
-  <meta name="theme-color" content="#2196F3">
+  <meta name="theme-color" content="#0ea5e9">
+  <meta name="color-scheme" content="light dark">
   <title>AI Image Generator</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  
+  <!-- Preload critical resources -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+  
+  <!-- External CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'">
   <link rel="stylesheet" href="/styles/main.css">
-  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.2/dist/sweetalert2.all.min.js"></script>
+  
+  <!-- External JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.4/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/tippy.js@6.3.7/dist/tippy.umd.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.2/dist/sweetalert2.all.min.js" defer></script>
+  
+  <!-- Preload key images -->
+  <link rel="preload" as="image" href="/images/placeholder.svg" fetchpriority="high">
 </head>
 <body class="min-h-screen bg-base-200">
   <!-- Theme toggle -->
   <div class="fixed top-4 right-4 z-50">
-    <label class="swap swap-rotate">
-      <input type="checkbox" class="theme-controller" value="dark" />
-      <svg class="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
-      <svg class="swap-off fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
+    <label class="swap swap-rotate" aria-label="Toggle theme">
+      <input type="checkbox" class="theme-controller" value="dark" aria-label="Dark mode toggle" />
+      <svg class="swap-on fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5.64,17l-.71.71a1,1,0,0,0,0,1.41,1,1,0,0,0,1.41,0l.71-.71A1,1,0,0,0,5.64,17ZM5,12a1,1,0,0,0-1-1H3a1,1,0,0,0,0,2H4A1,1,0,0,0,5,12Zm7-7a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4A1,1,0,0,0,12,5ZM5.64,7.05a1,1,0,0,0,.7.29,1,1,0,0,0,.71-.29,1,1,0,0,0,0-1.41l-.71-.71A1,1,0,0,0,4.93,6.34Zm12,.29a1,1,0,0,0,.7-.29l.71-.71a1,1,0,1,0-1.41-1.41L17,5.64a1,1,0,0,0,0,1.41A1,1,0,0,0,17.66,7.34ZM21,11H20a1,1,0,0,0,0,2h1a1,1,0,0,0,0-2Zm-9,8a1,1,0,0,0-1,1v1a1,1,0,0,0,2,0V20A1,1,0,0,0,12,19ZM18.36,17A1,1,0,0,0,17,18.36l.71.71a1,1,0,0,0,1.41,0,1,1,0,0,0,0-1.41ZM12,6.5A5.5,5.5,0,1,0,17.5,12,5.51,5.51,0,0,0,12,6.5Zm0,9A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
+      <svg class="swap-off fill-current w-8 h-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z"/></svg>
     </label>
   </div>
 
   <main class="container mx-auto px-4 py-8 max-w-7xl">
+    <!-- Header -->
     <header class="text-center mb-12">
-      <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+      <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent animate-gradient">
         AI Image Generator
       </h1>
-      <p class="text-lg text-base-content/70">Create unique images using artificial intelligence</p>
+      <p class="text-lg text-base-content/70">Create stunning images using state-of-the-art AI models</p>
     </header>
 
-    <!-- Chat Section -->
-    <div class="card bg-base-100 shadow-xl mb-8">
-      <div class="card-body">
-        <h2 class="card-title mb-4">AI Prompt Assistant</h2>
-        <div id="modelSelector" class="mb-4"></div>
-        <div class="chat-container bg-base-200 rounded-box p-4 h-96 overflow-y-auto mb-4">
-          <div id="chatMessages" class="space-y-4">
-            <div class="chat chat-start">
-              <div class="chat-bubble chat-bubble-primary">
-                Hello! I can help you create detailed prompts for image generation. What kind of image would you like to create?
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Left Column: Chat & Prompt Assistant -->
+      <div class="space-y-6">
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">
+              <i class="fas fa-robot text-primary" aria-hidden="true"></i>
+              AI Prompt Assistant
+            </h2>
+            <div class="bg-base-200 rounded-box p-4 h-96 overflow-y-auto mb-4" role="log" aria-live="polite" aria-label="Chat messages">
+              <div id="chatMessages" class="space-y-4">
+                <div class="chat chat-start">
+                  <div class="chat-bubble chat-bubble-primary">
+                    Hi! I can help you create detailed prompts for image generation. What kind of image would you like to create?
+                  </div>
+                </div>
+              </div>
+            </div>
+            <form id="chatForm" class="mt-4">
+              <div class="join w-full">
+                <textarea 
+                  id="chatInput"
+                  class="textarea textarea-bordered join-item w-full"
+                  placeholder="Describe what kind of image you want to create..."
+                  rows="2"
+                  required
+                  aria-label="Chat input"
+                ></textarea>
+                <button type="submit" class="btn btn-primary join-item" aria-label="Send message">
+                  <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Provider Selection Card -->
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">
+              <i class="fas fa-wand-magic-sparkles text-primary" aria-hidden="true"></i>
+              AI Model Selection
+            </h2>
+            <div class="form-control">
+              <label class="label" for="provider">
+                <span class="label-text">Choose AI Model</span>
+              </label>
+              <select id="provider" class="select select-bordered w-full">
+                <option value="recraft">Recraft V3 (Best Quality)</option>
+                <option value="flux">FLUX Pro (Fast)</option>
+                <option value="together">Together AI (Flexible)</option>
+              </select>
+            </div>
+
+            <!-- Model-specific options -->
+            <div id="recraftOptions" class="space-y-4">
+              <div class="form-control">
+                <label class="label" for="style">
+                  <span class="label-text">Image Style</span>
+                </label>
+                <select id="style" class="select select-bordered w-full">
+                  <option value="realistic_image">Realistic Image</option>
+                  <option value="digital_illustration">Digital Illustration</option>
+                  <option value="vector_illustration">Vector Illustration</option>
+                </select>
+              </div>
+              <div class="form-control">
+                <label class="label" for="imageSize">
+                  <span class="label-text">Image Size</span>
+                </label>
+                <select id="imageSize" class="select select-bordered w-full">
+                  <option value="square_hd">Square HD</option>
+                  <option value="portrait_4_3">Portrait 4:3</option>
+                  <option value="landscape_16_9">Landscape 16:9</option>
+                </select>
+              </div>
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Color Palette (Optional)</span>
+                </label>
+                <div class="flex flex-wrap gap-2" id="colorPalette" role="group" aria-label="Color palette selection">
+                  <input type="color" class="color-input h-10 w-10 rounded cursor-pointer" aria-label="Select color">
+                  <button type="button" class="btn btn-circle btn-sm" onclick="addColorInput()" aria-label="Add color">
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div id="standardOptions" class="space-y-4 hidden">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label" for="width">
+                    <span class="label-text">Width (px)</span>
+                  </label>
+                  <input type="number" id="width" class="input input-bordered" value="1024" min="64" max="2048" aria-label="Image width">
+                </div>
+                <div class="form-control">
+                  <label class="label" for="height">
+                    <span class="label-text">Height (px)</span>
+                  </label>
+                  <input type="number" id="height" class="input input-bordered" value="1024" min="64" max="2048" aria-label="Image height">
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="form-control">
+                  <label class="label" for="steps">
+                    <span class="label-text">Quality Steps</span>
+                  </label>
+                  <input type="number" id="steps" class="input input-bordered" value="30" min="1" max="50" aria-label="Quality steps">
+                </div>
+                <div class="form-control">
+                  <label class="label" for="n">
+                    <span class="label-text">Number of Images</span>
+                  </label>
+                  <input type="number" id="n" class="input input-bordered" value="1" min="1" max="4" aria-label="Number of images">
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <form id="chatForm" class="mt-4">
-          <div class="join w-full">
-            <textarea 
-              id="chatInput"
-              class="textarea textarea-bordered join-item w-full"
-              placeholder="Describe what kind of image you want to create..."
-              rows="2"
-              required
-            ></textarea>
-            <button type="submit" class="btn btn-primary join-item">
-              <i class="fas fa-paper-plane"></i>
-            </button>
-          </div>
-        </form>
       </div>
-    </div>
 
-    <!-- Image Generation Form -->
-    <div class="card bg-base-100 shadow-xl mb-8">
-      <div class="card-body">
-        <div role="alert" id="errorMessage" class="alert alert-error hidden"></div>
-        
-        <form id="generateForm" class="space-y-6">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Describe your image</span>
-            </label>
-            <textarea 
-              name="prompt" 
-              id="prompt" 
-              class="textarea textarea-bordered h-24"
-              placeholder="Be as detailed as possible..."
-              required
-            ></textarea>
-            <label class="label">
-              <span class="label-text-alt text-base-content/70">
-                Tip: Include details about style, mood, and composition
-              </span>
-            </label>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Width (px)</span>
-              </label>
-              <label class="input-group">
-                <span><i class="fas fa-arrows-alt-h"></i></span>
-                <input 
-                  type="number" 
-                  name="width" 
-                  id="width" 
-                  value="1024" 
-                  min="64" 
-                  max="2048"
-                  class="input input-bordered w-full"
+      <!-- Right Column: Generation Form & Preview -->
+      <div class="space-y-6">
+        <!-- Generation Form -->
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">
+              <i class="fas fa-image text-primary" aria-hidden="true"></i>
+              Image Generation
+            </h2>
+            <div role="alert" id="errorMessage" class="alert alert-error hidden"></div>
+            
+            <form id="generateForm" class="space-y-6">
+              <div class="form-control">
+                <label class="label" for="prompt">
+                  <span class="label-text">Prompt</span>
+                  <span class="label-text-alt">
+                    <button type="button" class="btn btn-xs btn-ghost" onclick="showPromptTips()" aria-label="Show prompt tips">
+                      <i class="fas fa-lightbulb" aria-hidden="true"></i> Tips
+                    </button>
+                  </span>
+                </label>
+                <textarea 
+                  name="prompt" 
+                  id="prompt" 
+                  class="textarea textarea-bordered h-32"
+                  placeholder="Describe your image in detail. Include style, mood, lighting, and composition details..."
                   required
-                >
-              </label>
-            </div>
+                  aria-label="Image generation prompt"
+                ></textarea>
+              </div>
 
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Height (px)</span>
-              </label>
-              <label class="input-group">
-                <span><i class="fas fa-arrows-alt-v"></i></span>
-                <input 
-                  type="number" 
-                  name="height" 
-                  id="height" 
-                  value="768" 
-                  min="64" 
-                  max="2048"
-                  class="input input-bordered w-full"
-                  required
-                >
-              </label>
-            </div>
+              <button type="submit" class="btn btn-primary w-full gap-2" id="generateButton">
+                <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                Generate Image
+                <span class="loading loading-spinner loading-sm hidden" aria-hidden="true"></span>
+              </button>
+            </form>
 
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Quality Steps</span>
-              </label>
-              <label class="input-group">
-                <span><i class="fas fa-sliders-h"></i></span>
-                <input 
-                  type="number" 
-                  name="steps" 
-                  id="steps" 
-                  value="28" 
-                  min="1" 
-                  max="50"
-                  class="input input-bordered w-full"
-                  required
-                >
-              </label>
-            </div>
-
-            <div class="form-control">
-              <label class="label">
-                <span class="label-text">Number of Images</span>
-              </label>
-              <label class="input-group">
-                <span><i class="fas fa-images"></i></span>
-                <input 
-                  type="number" 
-                  name="n" 
-                  id="n" 
-                  value="1" 
-                  min="1" 
-                  max="4"
-                  class="input input-bordered w-full"
-                  required
-                >
-              </label>
+            <div id="loadingIndicator" class="hidden" role="status" aria-live="polite">
+              <div class="flex items-center justify-center gap-2 text-base-content/70">
+                <span class="loading loading-spinner" aria-hidden="true"></span>
+                <span>Creating your masterpiece...</span>
+              </div>
             </div>
           </div>
+        </div>
 
-          <button type="submit" class="btn btn-primary w-full gap-2" id="generateButton">
-            <i class="fas fa-wand-magic-sparkles"></i>
-            Generate Images
-            <span class="loading loading-spinner loading-sm hidden"></span>
-          </button>
-        </form>
-
-        <div id="loadingIndicator" class="hidden">
-          <div class="flex items-center justify-center gap-2 text-base-content/70">
-            <span class="loading loading-spinner"></span>
-            <span>Generating your images...</span>
+        <!-- Preview Card -->
+        <div class="card bg-base-100 shadow-xl">
+          <div class="card-body">
+            <h2 class="card-title">
+              <i class="fas fa-eye text-primary" aria-hidden="true"></i>
+              Preview
+            </h2>
+            <div id="previewArea" class="min-h-[300px] flex items-center justify-center bg-base-200 rounded-box" role="img" aria-label="Image preview area">
+              <p class="text-base-content/50">Generated images will appear here</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Gallery Section -->
-    <section id="gallerySection" class="space-y-8" aria-live="polite">
+    <section id="gallerySection" class="mt-12 space-y-8" aria-label="Generated images gallery">
       <!-- Gallery content will be dynamically inserted here -->
     </section>
   </main>
 
+  <!-- Scripts -->
   <script src="/js/main.js" defer></script>
   <script src="/js/chat.js" defer></script>
+  
+  <script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', () => {
+      tippy('[data-tippy-content]', {
+        theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+      });
+      
+      // Listen for theme changes
+      const themeController = document.querySelector('.theme-controller');
+      themeController.addEventListener('change', () => {
+        tippy.setDefaultProps({
+          theme: themeController.checked ? 'dark' : 'light'
+        });
+      });
+    });
+
+    // Add color input function
+    function addColorInput() {
+      const colorPalette = document.getElementById('colorPalette');
+      const input = document.createElement('input');
+      input.type = 'color';
+      input.className = 'color-input h-10 w-10 rounded cursor-pointer';
+      input.setAttribute('aria-label', 'Select color');
+      colorPalette.insertBefore(input, colorPalette.lastElementChild);
+    }
+
+    // Show prompt tips
+    function showPromptTips() {
+      Swal.fire({
+        title: 'Tips for Better Prompts',
+        html: `
+          <ul class="text-left space-y-2">
+            <li>🎨 <strong>Style:</strong> Specify art style (e.g., photorealistic, digital art, oil painting)</li>
+            <li>🌟 <strong>Lighting:</strong> Describe lighting conditions (e.g., soft natural light, dramatic sunset)</li>
+            <li>📸 <strong>Composition:</strong> Mention camera angle and distance (e.g., close-up, aerial view)</li>
+            <li>🎭 <strong>Mood:</strong> Include emotional qualities (e.g., serene, mysterious, energetic)</li>
+            <li>🔍 <strong>Details:</strong> Add specific details about textures, colors, and materials</li>
+          </ul>
+        `,
+        icon: 'info',
+        confirmButtonText: 'Got it!',
+        confirmButtonColor: '#0ea5e9',
+        customClass: {
+          container: document.documentElement.getAttribute('data-theme') === 'dark' ? 'swal2-dark' : ''
+        }
+      });
+    }
+
+    // Handle theme changes for SweetAlert2
+    const themeController = document.querySelector('.theme-controller');
+    themeController.addEventListener('change', () => {
+      document.documentElement.style.setProperty(
+        '--swal2-theme', 
+        themeController.checked ? 'dark' : 'light'
+      );
+    });
+  </script>
 </body>
 </html> 
